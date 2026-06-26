@@ -16,7 +16,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", "oasis-dev-secret-change-in-production-xyz1
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+# Accept localhost (Termux) + any Render subdomain + custom domain
+_ALLOWED = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = _ALLOWED + [".onrender.com"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -65,7 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "oasis_nutrition_api.wsgi.application"
 
-# ─── Database (SQLite — Termux friendly) ───────────────────────────────────────
+# ─── Database (SQLite — Termux + Render free tier) ─────────────────────────────
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -116,32 +118,24 @@ REST_FRAMEWORK = {
 # ─── CORS — Allow Oasis CNST & Thanzi PWA ───────────────────────────────────────
 CORS_ALLOWED_ORIGINS = [
     "https://welcome2oasis.me",
+    "https://oasiscnst.app",
     "https://edisontaimu9-ui.github.io",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-    "http://localhost:5500",   # Live Server (VS Code)
+    "http://localhost:5500",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all in dev mode
 
 # ─── Crawler Settings ────────────────────────────────────────────────────────────
 CRAWLER_SETTINGS = {
-    # How often to auto-crawl (in hours)
     "CRAWL_INTERVAL_HOURS": int(os.getenv("CRAWL_INTERVAL_HOURS", "6")),
-
-    # Max articles to keep per source before pruning old ones
     "MAX_ARTICLES_PER_SOURCE": int(os.getenv("MAX_ARTICLES_PER_SOURCE", "100")),
-
-    # Request timeout in seconds
     "REQUEST_TIMEOUT": int(os.getenv("REQUEST_TIMEOUT", "15")),
-
-    # User agent for scraping
     "USER_AGENT": (
         "Mozilla/5.0 (compatible; OasisCNSTBot/1.0; "
         "+https://welcome2oasis.me/bot)"
     ),
-
-    # Enable/disable scheduler on startup
     "ENABLE_SCHEDULER": os.getenv("ENABLE_SCHEDULER", "True") == "True",
 }
 
@@ -160,11 +154,6 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": BASE_DIR / "logs" / "oasis_crawler.log",
-            "formatter": "verbose",
-        },
     },
     "root": {
         "handlers": ["console"],
@@ -172,7 +161,7 @@ LOGGING = {
     },
     "loggers": {
         "crawler": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },

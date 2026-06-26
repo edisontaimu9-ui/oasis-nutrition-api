@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: oasis-nutrition-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: oasis-nutrition-api.onrender.com
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENABLE_SCHEDULER
+        value: "True"
+      - key: CRAWL_INTERVAL_HOURS
+        value: "6"
+    healthCheckPath: /api/v1/articles/stats/
