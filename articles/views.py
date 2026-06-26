@@ -57,7 +57,7 @@ class SourceViewSet(viewsets.ReadOnlyModelViewSet):
     GET /api/v1/sources/regions/ — breakdown by region
     """
     queryset = Source.objects.filter(is_active=True).annotate(
-        article_count=Count("articles")
+        computed_article_count=Count("articles")
     )
     serializer_class = SourceSerializer
     filter_backends  = [DjangoFilterBackend, SearchFilter, OrderingFilter]

@@ -8,7 +8,7 @@ from datetime import datetime, timezone as dt_tz
 from typing import Optional
 
 from bs4 import BeautifulSoup
-from .base import BaseCrawler
+from crawler.base import BaseCrawler
 
 logger = logging.getLogger("crawler")
 
