@@ -115,10 +115,12 @@ class PubMedNutritionCrawler(BaseCrawler):
     def _parse_pubmed_date(self, datestr: str) -> Optional[datetime]:
         """Parse PubMed date strings like '2024 Mar', '2024 Mar 15'."""
         formats = ["%Y %b %d", "%Y %b", "%Y"]
+        now = datetime.now(dt_tz.utc)
         for fmt in formats:
             try:
                 dt = datetime.strptime(datestr.strip(), fmt)
-                return dt.replace(tzinfo=dt_tz.utc)
+                dt = dt.replace(tzinfo=dt_tz.utc)
+                return dt if dt <= now else None
             except ValueError:
                 continue
         return None
