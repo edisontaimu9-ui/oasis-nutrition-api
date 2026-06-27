@@ -24,8 +24,13 @@ def api_root(request):
     })
 
 
+def health(request):
+    return JsonResponse({"status": "ok"})
+
+
 urlpatterns = [
     path("",          api_root),
+    path("health/",   health),
     path("admin/",    admin.site.urls),
     path("api/v1/",   include("articles.urls")),
     path("api/v1/",   include("crawler.urls")),
