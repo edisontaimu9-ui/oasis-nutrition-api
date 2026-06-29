@@ -5,7 +5,7 @@ Clinical nutrition news & updates crawler with REST API endpoints, built for Oas
 
 ---
 
-## Quick Start (Termux)
+## Quick Start 
 
 ```bash
 # Clone / copy project into Termux
